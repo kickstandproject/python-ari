@@ -1,11 +1,10 @@
-===============================
 python-ari
-===============================
+==========
 
 Python binding for ARI
 
 * Free software: Apache license
-* Documentation: http://docs.openstack.org/developer/python-ari
+* Documentation: http://python-ari.readthedocs.org
 
 Features
 --------
