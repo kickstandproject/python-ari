@@ -32,3 +32,9 @@ class ListChannel(base.ListCommand):
     ]
     log = logging.getLogger(__name__ + '.ListChannel')
     resource = 'channels'
+
+
+class ShowChannel(base.ShowCommand):
+
+    resource = 'channels'
+    log = logging.getLogger(__name__ + '.ShowChannel')

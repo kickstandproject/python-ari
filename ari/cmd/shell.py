@@ -31,8 +31,11 @@ from ari.shell.v1 import sound
 
 COMMAND = {
     'bridge-list': bridge.ListBridge,
+    'bridge-show': bridge.ShowBridge,
     'channel-list': channel.ListChannel,
+    'channel-show': channel.ShowChannel,
     'sound-list': sound.ListSound,
+    'sound-show': sound.ShowSound,
 }
 
 COMMANDS = {

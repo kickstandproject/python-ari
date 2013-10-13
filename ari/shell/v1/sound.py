@@ -28,3 +28,9 @@ class ListSound(base.ListCommand):
     log = logging.getLogger(__name__ + '.ListSound')
     pagination = True
     resource = 'sounds'
+
+
+class ShowSound(base.ShowCommand):
+
+    resource = 'sounds'
+    log = logging.getLogger(__name__ + '.ShowSound')

@@ -29,3 +29,9 @@ class ListBridge(base.ListCommand):
     ]
     log = logging.getLogger(__name__ + '.ListBridge')
     resource = 'bridges'
+
+
+class ShowBridge(base.ShowCommand):
+
+    resource = 'bridges'
+    log = logging.getLogger(__name__ + '.ShowBridge')

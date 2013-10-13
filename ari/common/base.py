@@ -14,6 +14,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import copy
+
 
 class Manager(object):
 
@@ -91,3 +93,6 @@ class Resource(object):
 
     def is_loaded(self):
         return self._loaded
+
+    def to_dict(self):
+        return copy.deepcopy(self._info)

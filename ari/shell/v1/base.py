@@ -18,6 +18,7 @@ import logging
 
 from cliff import command
 from cliff import lister
+from cliff import show
 
 from ari.common import utils
 
@@ -72,7 +73,7 @@ class ListCommand(Command, lister.Lister):
         return parser
 
     def setup_columns(self, info, parsed_args):
-        _columns = len(info) > 0 and sorted(info[0].__dict__) or []
+        _columns = len(info) > 0 and sorted(info[0].to_dict()) or []
 
         if not _columns:
             parsed_args.columns = []
@@ -83,3 +84,40 @@ class ListCommand(Command, lister.Lister):
 
         return (_columns, (utils.get_item_properties(
             s, _columns, ) for s in info), )
+
+
+class ShowCommand(Command, show.ShowOne):
+
+    allow_names = False
+    log = None
+    resource = None
+
+    def _show(self, parsed_args):
+        obj_shower = getattr(self.get_client(), self.resource)
+        data = obj_shower.get(parsed_args.id)
+
+        return data.to_dict()
+
+    def get_data(self, parsed_args):
+        self.log.debug(parsed_args)
+        data = self._show(parsed_args)
+
+        if not data:
+            return ({}, {})
+        else:
+            return zip(*sorted(data.items()))
+
+    def get_parser(self, prog_name):
+        parser = super(ShowCommand, self).get_parser(prog_name)
+        utils.add_show_list_common_argument(parser)
+
+        if self.allow_names:
+            help_str = 'ID or name of %s to look up'
+        else:
+            help_str = 'ID of %s to look up'
+
+        parser.add_argument(
+            'id', metavar=self.resource.upper(),
+            help=help_str % self.resource)
+
+        return parser
