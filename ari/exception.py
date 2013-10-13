@@ -40,6 +40,10 @@ class BaseException(Exception):
         return self.message or self.__class__.__doc__
 
 
+class CommandError(BaseException):
+    """Invalid usage of CLI."""
+
+
 class ClientException(Exception):
     """DEPRECATED."""
 

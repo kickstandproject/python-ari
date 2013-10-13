@@ -79,3 +79,15 @@ class Resource(object):
         info = ", ".join("%s=%s" % (k, getattr(self, k)) for k in reprkeys)
 
         return "<%s %s>" % (self.__class__.__name__, info)
+
+    def get(self):
+        self.set_loaded(True)
+        if not hasattr(self.manager, 'get'):
+            return
+
+        new = self.manager.get(self.id)
+        if new:
+            self._add_details(new._info)
+
+    def is_loaded(self):
+        return self._loaded
