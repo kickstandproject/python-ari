@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# Copyright 2012 OpenStack LLC.
 # Copyright (c) 2013 PolyBeacon, Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -14,20 +13,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from ari.common import http
-from ari.v1 import bridge
-from ari.v1 import channel
-from ari.v1 import endpoint
-from ari.v1 import sound
+import logging
+
+from ari.shell.v1 import base
 
 
-class Client(http.HTTPClient):
-    """Client for the ARI v1 API.
-    """
+class ListEndpoint(base.ListCommand):
 
-    def __init__(self, *args, **kwargs):
-        super(Client, self).__init__(*args, **kwargs)
-        self.bridges = bridge.BridgeManager(self)
-        self.channels = channel.ChannelManager(self)
-        self.endpoints = endpoint.EndpointManager(self)
-        self.sounds = sound.SoundManager(self)
+    log = logging.getLogger(__name__ + '.ListEndpoint')
+    resource = 'endpoints'

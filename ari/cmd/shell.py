@@ -27,6 +27,7 @@ from ari.common import utils
 from ari import exception
 from ari.shell.v1 import bridge
 from ari.shell.v1 import channel
+from ari.shell.v1 import endpoint
 from ari.shell.v1 import sound
 
 COMMAND = {
@@ -34,6 +35,7 @@ COMMAND = {
     'bridge-show': bridge.ShowBridge,
     'channel-list': channel.ListChannel,
     'channel-show': channel.ShowChannel,
+    'endpoint-list': endpoint.ListEndpoint,
     'sound-list': sound.ListSound,
     'sound-show': sound.ShowSound,
 }
