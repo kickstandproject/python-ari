@@ -18,6 +18,52 @@ import logging
 from ari.shell.v1 import base
 
 
+class AnswerChannel(base.ShowCommand):
+    """Answer a given channel."""
+
+    function = 'answer'
+    resource = 'channels'
+    log = logging.getLogger(__name__ + '.AnswerChannel')
+
+
+class DialChannel(base.CreateCommand):
+    """Dial a given channel."""
+
+    function = 'dial'
+    log = logging.getLogger(__name__ + '.DialChannel')
+    resource = 'channels'
+
+    def add_known_arguments(self, parser):
+        parser.add_argument(
+            '--context', help='The context to dial after the endpoint'
+            ' answers. (Default: demo)')
+        parser.add_argument(
+            '--endpoint', help='Endpoint to call.')
+        parser.add_argument(
+            '--extension', help='The extension to dial after the endpoint'
+            ' answers.')
+        parser.add_argument(
+            '--timeout', help='The timeout (in seconds) before giving up'
+            ' dialing.')
+        parser.add_argument(
+            'channel_id', metavar='CHANNEL', help='Channel id to use.')
+
+    def args2body(self, parsed_args):
+        body = {
+            'channel_id': parsed_args.channel_id
+        }
+        if parsed_args.context:
+            body['context'] = parsed_args.context
+        if parsed_args.endpoint:
+            body['endpoint'] = parsed_args.endpoint
+        if parsed_args.extension:
+            body['extension'] = parsed_args.extension
+        if parsed_args.timeout:
+            body['timeout'] = parsed_args.timeout
+
+        return body
+
+
 class CreateChannel(base.CreateCommand):
     """Create a channel."""
 

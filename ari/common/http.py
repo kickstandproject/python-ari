@@ -197,7 +197,10 @@ class HTTPClient(object):
     # [1] https://issues.asterisk.org/jira/browse/ASTERISK-22685
     #
     def url_encode_request(self, method, url, body):
-        new_url = '%s?%s' % (url, urllib.urlencode(body))
+        if body:
+            new_url = '%s?%s' % (url, urllib.urlencode(body))
+        else:
+            new_url = url
 
         return self.json_request(method, new_url)
 

@@ -16,7 +16,14 @@
 from ari.common import base
 from ari import exception
 
-CREATION_ATTRIBUTES = [
+DIAL_ATTRIBUTES = [
+    'context',
+    'endpoint',
+    'extension',
+    'timeout',
+]
+
+CREATE_ATTRIBUTES = [
     'app',
     'appArgs',
     'callerId',
@@ -37,23 +44,39 @@ class ChannelManager(base.Manager):
 
     resource_class = Channel
 
-    @staticmethod
-    def _path(id=None):
-        return '/channels/%s' % id if id else '/channels'
-
-    def create(self, **kwargs):
+    def __create(self, attributes, path, **kwargs):
         keys = {}
         for (key, value) in kwargs.items():
-            if key in CREATION_ATTRIBUTES:
+            if key in attributes:
                 keys[key] = value
             else:
                 message = key
                 raise exception.InvalidAttribute(message=message)
 
-        return self._create(self._path(), keys)
+        return self._create(path, keys)
+
+    @staticmethod
+    def _path(id=None):
+        return '/channels/%s' % id if id else '/channels'
+
+    def answer(self, channel_id):
+        path = '%s/%s' % (self._path(channel_id), 'answer')
+
+        return self._create(path, None)
+
+    def create(self, **kwargs):
+        path = self._path()
+        return self.__create(
+            attributes=CREATE_ATTRIBUTES, path=path, **kwargs)
 
     def delete(self, channel_id):
         return self._delete(self._path(channel_id))
+
+    def dial(self, channel_id, **kwargs):
+        path = '%s/%s' % (self._path(channel_id), 'dial')
+
+        return self.__create(
+            attributes=DIAL_ATTRIBUTES, path=path, **kwargs)
 
     def get(self, channel_id):
         try:

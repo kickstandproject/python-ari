@@ -42,12 +42,14 @@ class Command(command.Command):
 
 class CreateCommand(Command, show.ShowOne):
 
+    function = 'create'
     resource = None
     log = None
 
     def _create(self, body):
         obj_lister = getattr(self.get_client(), self.resource)
-        data = obj_lister.create(**body)
+        func = getattr(obj_lister, self.function)
+        data = func(**body)
 
         if data:
             return data.to_dict()
@@ -154,14 +156,19 @@ class ListCommand(Command, lister.Lister):
 class ShowCommand(Command, show.ShowOne):
 
     allow_names = False
+    function = 'get'
     log = None
     resource = None
 
     def _show(self, parsed_args):
         obj_shower = getattr(self.get_client(), self.resource)
-        data = obj_shower.get(parsed_args.id)
+        func = getattr(obj_shower, self.function)
+        data = func(parsed_args.id)
 
-        return data.to_dict()
+        if data:
+            return data.to_dict()
+
+        return None
 
     def get_data(self, parsed_args):
         self.log.debug(parsed_args)

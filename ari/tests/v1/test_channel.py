@@ -50,6 +50,13 @@ CREATE_CHANNEL = {
     'timeout': 30,
 }
 
+DIAL_CHANNEL = {
+    'context': 'demo',
+    'endpoint': 'Local/s',
+    'extension': 's',
+    'timeout': 30,
+}
+
 FIXTURES = {
     '/channels': {
         'GET': (
@@ -71,6 +78,18 @@ FIXTURES = {
             None,
         ),
     },
+    '/channels/%s/answer' % CHANNEL['id']: {
+        'POST': (
+            {},
+            None,
+        ),
+    },
+    '/channels/%s/dial' % CHANNEL['id']: {
+        'POST': (
+            {},
+            DIAL_CHANNEL,
+        ),
+    },
 }
 
 
@@ -80,6 +99,22 @@ class ChannelManagerTest(testtools.TestCase):
         super(ChannelManagerTest, self).setUp()
         self.api = utils.FakeAPI(FIXTURES)
         self.manager = channel.ChannelManager(self.api)
+
+    def test_answer(self):
+        res = self.manager.answer(channel_id=CHANNEL['id'])
+        expect = [
+            ('POST', '/channels/%s/answer' % CHANNEL['id'], {}, None),
+        ]
+        self.assertEqual(self.api.calls, expect)
+        self.assertEqual(res, None)
+
+    def test_dial(self):
+        res = self.manager.dial(channel_id=CHANNEL['id'], **DIAL_CHANNEL)
+        expect = [
+            ('POST', '/channels/%s/dial' % CHANNEL['id'], {}, DIAL_CHANNEL),
+        ]
+        self.assertEqual(self.api.calls, expect)
+        self.assertTrue(res)
 
     def test_list(self):
         res = self.manager.list()
