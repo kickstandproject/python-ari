@@ -21,16 +21,21 @@ import sys
 
 from cliff import app
 from cliff import commandmanager
+from oslo.config import cfg
 
 from ari import client
 from ari.common import utils
 from ari import exception
+from ari.openstack.common import log as logging
 from ari.shell.v1 import bridge
 from ari.shell.v1 import channel
 from ari.shell.v1 import endpoint
 from ari.shell.v1 import sound
 
+CONF = cfg.CONF
+
 COMMAND = {
+    'bridge-create': bridge.CreateBridge,
     'bridge-list': bridge.ListBridge,
     'bridge-show': bridge.ShowBridge,
     'channel-list': channel.ListChannel,
@@ -43,6 +48,8 @@ COMMAND = {
 COMMANDS = {
     '1': COMMAND
 }
+
+LOG = logging.getLogger(__name__)
 
 VERSION = '1'
 
@@ -110,9 +117,18 @@ class Shell(app.App):
 
         return parser
 
+    def configure_logging(self):
+        if self.options.debug:
+            CONF.debug = True
+        elif self.options.verbose_level:
+            CONF.verbose = True
+
+        return
+
     def initialize_app(self, argv):
         super(Shell, self).initialize_app(argv)
 
+        logging.setup('ari')
         cmd_name = None
 
         if argv:

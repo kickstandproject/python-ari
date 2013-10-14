@@ -40,6 +40,34 @@ class Command(command.Command):
         return self.get_data(parsed_args)
 
 
+class CreateCommand(Command, show.ShowOne):
+
+    resource = None
+    log = None
+
+    def _create(self, body):
+        obj_lister = getattr(self.get_client(), self.resource)
+        data = obj_lister.create(**body)
+
+        return data.to_dict()
+
+    def get_data(self, parsed_args):
+        self.log.debug(parsed_args)
+        body = self.args2body(parsed_args)
+        data = self._create(body)
+
+        if not data:
+            return ({}, {})
+        else:
+            return zip(*sorted(data.items()))
+
+    def get_parser(self, prog_name):
+        parser = super(CreateCommand, self).get_parser(prog_name)
+        self.add_known_arguments(parser)
+
+        return parser
+
+
 class ListCommand(Command, lister.Lister):
 
     list_columns = []

@@ -18,6 +18,24 @@ import logging
 from ari.shell.v1 import base
 
 
+class CreateBridge(base.CreateCommand):
+
+    log = logging.getLogger(__name__ + '.CreateBridge')
+    resource = 'bridges'
+
+    def add_known_arguments(self, parser):
+        parser.add_argument(
+            'bridge_type', metavar='BRIDGE_TYPE',
+            help='Type of bridge to create.')
+
+    def args2body(self, parsed_args):
+        body = {
+            'type': parsed_args.bridge_type,
+        }
+
+        return body
+
+
 class ListBridge(base.ListCommand):
 
     list_columns = [
