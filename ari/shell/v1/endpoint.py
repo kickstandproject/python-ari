@@ -19,6 +19,7 @@ from ari.shell.v1 import base
 
 
 class ListEndpoint(base.ListCommand):
+    """List endpoints."""
 
     log = logging.getLogger(__name__ + '.ListEndpoint')
     resource = 'endpoints'

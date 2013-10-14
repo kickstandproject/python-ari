@@ -19,6 +19,7 @@ from ari.shell.v1 import base
 
 
 class CreateBridge(base.CreateCommand):
+    """Create a bridge."""
 
     log = logging.getLogger(__name__ + '.CreateBridge')
     resource = 'bridges'
@@ -37,12 +38,14 @@ class CreateBridge(base.CreateCommand):
 
 
 class DeleteBridge(base.DeleteCommand):
+    """Delete a given bridge."""
 
     log = logging.getLogger(__name__ + '.DeleteBridge')
     resource = 'bridges'
 
 
 class ListBridge(base.ListCommand):
+    """List bridges."""
 
     list_columns = [
         'id',
@@ -56,6 +59,7 @@ class ListBridge(base.ListCommand):
 
 
 class ShowBridge(base.ShowCommand):
+    """Show information of a given bridge."""
 
     log = logging.getLogger(__name__ + '.ShowBridge')
     resource = 'bridges'

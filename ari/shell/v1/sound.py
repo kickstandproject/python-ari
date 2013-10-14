@@ -19,6 +19,7 @@ from ari.shell.v1 import base
 
 
 class ListSound(base.ListCommand):
+    """List sounds."""
 
     list_columns = [
         'id',
@@ -31,6 +32,7 @@ class ListSound(base.ListCommand):
 
 
 class ShowSound(base.ShowCommand):
+    """Show information of a given sound."""
 
     resource = 'sounds'
     log = logging.getLogger(__name__ + '.ShowSound')

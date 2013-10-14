@@ -19,6 +19,7 @@ from ari.shell.v1 import base
 
 
 class CreateChannel(base.CreateCommand):
+    """Create a channel."""
 
     log = logging.getLogger(__name__ + '.CreateChannel')
     resource = 'channels'
@@ -71,12 +72,14 @@ class CreateChannel(base.CreateCommand):
 
 
 class DeleteChannel(base.DeleteCommand):
+    """Delete a given channel."""
 
     log = logging.getLogger(__name__ + '.DeleteChannel')
     resource = 'channels'
 
 
 class ListChannel(base.ListCommand):
+    """List channels."""
 
     list_columns = [
         'id',
@@ -93,6 +96,7 @@ class ListChannel(base.ListCommand):
 
 
 class ShowChannel(base.ShowCommand):
+    """Show information of a given channel."""
 
     resource = 'channels'
     log = logging.getLogger(__name__ + '.ShowChannel')

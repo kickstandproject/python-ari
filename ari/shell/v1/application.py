@@ -19,6 +19,7 @@ from ari.shell.v1 import base
 
 
 class ListApplication(base.ListCommand):
+    """List applications."""
 
     list_columns = [
         'name',
@@ -31,6 +32,7 @@ class ListApplication(base.ListCommand):
 
 
 class ShowApplication(base.ShowCommand):
+    """Show information of a given application."""
 
     log = logging.getLogger(__name__ + '.ShowApplication')
     resource = 'applications'
