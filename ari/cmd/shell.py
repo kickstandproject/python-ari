@@ -36,6 +36,7 @@ CONF = cfg.CONF
 
 COMMAND = {
     'bridge-create': bridge.CreateBridge,
+    'bridge-delete': bridge.DeleteBridge,
     'bridge-list': bridge.ListBridge,
     'bridge-show': bridge.ShowBridge,
     'channel-list': channel.ListChannel,

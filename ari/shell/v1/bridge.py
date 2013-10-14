@@ -36,6 +36,12 @@ class CreateBridge(base.CreateCommand):
         return body
 
 
+class DeleteBridge(base.DeleteCommand):
+
+    log = logging.getLogger(__name__ + '.DeleteBridge')
+    resource = 'bridges'
+
+
 class ListBridge(base.ListCommand):
 
     list_columns = [
@@ -51,5 +57,5 @@ class ListBridge(base.ListCommand):
 
 class ShowBridge(base.ShowCommand):
 
-    resource = 'bridges'
     log = logging.getLogger(__name__ + '.ShowBridge')
+    resource = 'bridges'

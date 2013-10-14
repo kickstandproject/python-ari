@@ -44,11 +44,9 @@ class HTTPClient(object):
         try:
             body_json = json.loads(body)
 
-            if 'error_message' in body_json:
-                body_json = json.loads(body_json['error_message'])
+            if 'message' in body_json:
+                return body_json['message']
 
-                if 'faultstring' in body_json:
-                    return body_json['faultstring']
         except ValueError:
             pass
 
@@ -185,6 +183,12 @@ class HTTPClient(object):
         if body:
             dump.extend([body, ''])
         LOG.debug('\n'.join(dump))
+
+    def raw_request(self, method, url, **kwargs):
+        kwargs.setdefault('headers', {})
+        kwargs['headers'].setdefault('Content-Type',
+                                     'application/octet-stream')
+        return self._http_request(url, method, **kwargs)
 
 
 class ResponseBodyIterator(object):

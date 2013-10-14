@@ -68,6 +68,40 @@ class CreateCommand(Command, show.ShowOne):
         return parser
 
 
+class DeleteCommand(Command):
+
+    allow_names = False
+    log = None
+    resource = None
+
+    def _delete(self, parsed_args):
+        obj_deleter = getattr(self.get_client(), self.resource)
+        obj_deleter.delete(parsed_args.id)
+
+        return
+
+    def get_data(self, parsed_args):
+        self.log.debug(parsed_args)
+        self._delete(parsed_args)
+
+        return
+
+    def get_parser(self, prog_name):
+        parser = super(DeleteCommand, self).get_parser(prog_name)
+        utils.add_show_list_common_argument(parser)
+
+        if self.allow_names:
+            help_str = 'ID or name of %s to look up'
+        else:
+            help_str = 'ID of %s to look up'
+
+        parser.add_argument(
+            'id', metavar=self.resource.upper(),
+            help=help_str % self.resource)
+
+        return parser
+
+
 class ListCommand(Command, lister.Lister):
 
     list_columns = []
