@@ -29,5 +29,11 @@ class EndpointManager(base.Manager):
     def _path(id=None):
         return '/endpoints/%s' % id if id else '/endpoints'
 
+    def get(self, technology):
+        try:
+            return self._list(self._path(technology))[0]
+        except IndexError:
+            return None
+
     def list(self):
         return self._list(self._path())

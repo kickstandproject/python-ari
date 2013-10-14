@@ -47,6 +47,7 @@ COMMAND = {
     'channel-list': channel.ListChannel,
     'channel-show': channel.ShowChannel,
     'endpoint-list': endpoint.ListEndpoint,
+    'endpoint-show': endpoint.ShowEndpoint,
     'sound-list': sound.ListSound,
     'sound-show': sound.ShowSound,
 }

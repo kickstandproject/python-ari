@@ -21,5 +21,18 @@ from ari.shell.v1 import base
 class ListEndpoint(base.ListCommand):
     """List endpoints."""
 
+    list_columns = [
+        'technology',
+        'resource',
+        'state',
+        'channel_ids',
+    ]
     log = logging.getLogger(__name__ + '.ListEndpoint')
     resource = 'endpoints'
+
+
+class ShowEndpoint(base.ShowCommand):
+    """Show information of a given endpoint."""
+
+    resource = 'endpoints'
+    log = logging.getLogger(__name__ + '.ShowEndpoint')
