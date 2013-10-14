@@ -25,7 +25,13 @@ class Manager(object):
         self.api = api
 
     def _create(self, url, body):
-        resp, body = self.api.json_request('POST', url, body=body)
+        # Note(pabelanger): Work around upstream bug[1] and this function
+        # should be changed back to self.api.json_request once we can POS
+        # json directly to ARI.
+        #
+        # [1] https://issues.asterisk.org/jira/browse/ASTERISK-22685
+        #
+        resp, body = self.api.url_encode_request('POST', url, body=body)
         if body:
             return self.resource_class(self, body)
 

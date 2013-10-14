@@ -19,6 +19,7 @@ import httplib
 import logging
 import socket
 import StringIO
+import urllib
 import urlparse
 
 try:
@@ -189,6 +190,16 @@ class HTTPClient(object):
         kwargs['headers'].setdefault('Content-Type',
                                      'application/octet-stream')
         return self._http_request(url, method, **kwargs)
+
+    # Note(pabelanger): Work around upstream bug[1] and this function should be
+    # deleted once we can POST json directly to ARI.
+    #
+    # [1] https://issues.asterisk.org/jira/browse/ASTERISK-22685
+    #
+    def url_encode_request(self, method, url, body):
+        new_url = '%s?%s' % (url, urllib.urlencode(body))
+
+        return self.json_request(method, new_url)
 
 
 class ResponseBodyIterator(object):
