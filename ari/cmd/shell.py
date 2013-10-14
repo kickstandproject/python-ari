@@ -27,6 +27,7 @@ from ari import client
 from ari.common import utils
 from ari import exception
 from ari.openstack.common import log as logging
+from ari.shell.v1 import application
 from ari.shell.v1 import bridge
 from ari.shell.v1 import channel
 from ari.shell.v1 import endpoint
@@ -35,6 +36,8 @@ from ari.shell.v1 import sound
 CONF = cfg.CONF
 
 COMMAND = {
+    'application-list': application.ListApplication,
+    'application-show': application.ShowApplication,
     'bridge-create': bridge.CreateBridge,
     'bridge-delete': bridge.DeleteBridge,
     'bridge-list': bridge.ListBridge,

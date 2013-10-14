@@ -15,6 +15,7 @@
 # under the License.
 
 from ari.common import http
+from ari.v1 import application
 from ari.v1 import bridge
 from ari.v1 import channel
 from ari.v1 import endpoint
@@ -27,6 +28,7 @@ class Client(http.HTTPClient):
 
     def __init__(self, *args, **kwargs):
         super(Client, self).__init__(*args, **kwargs)
+        self.applications = application.ApplicationManager(self)
         self.bridges = bridge.BridgeManager(self)
         self.channels = channel.ChannelManager(self)
         self.endpoints = endpoint.EndpointManager(self)
