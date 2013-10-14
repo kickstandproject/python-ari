@@ -39,6 +39,8 @@ COMMAND = {
     'bridge-delete': bridge.DeleteBridge,
     'bridge-list': bridge.ListBridge,
     'bridge-show': bridge.ShowBridge,
+    'channel-create': channel.CreateChannel,
+    'channel-delete': channel.DeleteChannel,
     'channel-list': channel.ListChannel,
     'channel-show': channel.ShowChannel,
     'endpoint-list': endpoint.ListEndpoint,

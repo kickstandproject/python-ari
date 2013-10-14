@@ -14,6 +14,18 @@
 # under the License.
 
 from ari.common import base
+from ari import exception
+
+CREATION_ATTRIBUTES = [
+    'app',
+    'appArgs',
+    'callerId',
+    'context',
+    'endpoint',
+    'extension',
+    'priority',
+    'timeout',
+]
 
 
 class Channel(base.Resource):
@@ -28,6 +40,17 @@ class ChannelManager(base.Manager):
     @staticmethod
     def _path(id=None):
         return '/channels/%s' % id if id else '/channels'
+
+    def create(self, **kwargs):
+        keys = {}
+        for (key, value) in kwargs.items():
+            if key in CREATION_ATTRIBUTES:
+                keys[key] = value
+            else:
+                message = key
+                raise exception.InvalidAttribute(message=message)
+
+        return self._create(self._path(), keys)
 
     def delete(self, channel_id):
         return self._delete(self._path(channel_id))

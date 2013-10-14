@@ -58,3 +58,7 @@ class HTTPException(ClientException):
     def __str__(self):
         return self.details or "%s (HTTP %s)" % (self.__class__.__name__,
                                                  self.code)
+
+
+class InvalidAttribute(BaseException):
+    pass

@@ -39,11 +39,26 @@ CHANNEL = {
     'creationtime': '2013-10-12T16:40:01.946-0400',
 }
 
+CREATE_CHANNEL = {
+    'app': 'foo',
+    'appArgs': 'bar',
+    'callerId': 'Bob',
+    'context': 'demo',
+    'endpoint': 'Local/s',
+    'extension': 's',
+    'priority': '1',
+    'timeout': 30,
+}
+
 FIXTURES = {
     '/channels': {
         'GET': (
             {},
             [CHANNEL],
+        ),
+        'POST': (
+            {},
+            CREATE_CHANNEL,
         ),
     },
     '/channels/%s' % CHANNEL['id']: {
@@ -81,6 +96,14 @@ class ChannelManagerTest(testtools.TestCase):
         ]
         self.assertEqual(self.api.calls, expect)
         self.assertEqual(res.id, CHANNEL['id'])
+
+    def test_create(self):
+        res = self.manager.create(**CREATE_CHANNEL)
+        expect = [
+            ('POST', '/channels', {}, CREATE_CHANNEL),
+        ]
+        self.assertEqual(self.api.calls, expect)
+        self.assertTrue(res)
 
     def test_delete(self):
         res = self.manager.delete(channel_id=CHANNEL['id'])

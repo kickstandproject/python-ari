@@ -49,7 +49,10 @@ class CreateCommand(Command, show.ShowOne):
         obj_lister = getattr(self.get_client(), self.resource)
         data = obj_lister.create(**body)
 
-        return data.to_dict()
+        if data:
+            return data.to_dict()
+
+        return None
 
     def get_data(self, parsed_args):
         self.log.debug(parsed_args)
