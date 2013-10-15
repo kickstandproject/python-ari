@@ -36,7 +36,7 @@ CREATE_BRIDGE = {
     'type': 'mixing',
 }
 
-HOLD_BRIDGE = {
+MUSIC_BRIDGE = {
     'mohClass': 'default',
 }
 
@@ -71,16 +71,14 @@ FIXTURES = {
             ADD_BRIDGE,
         ),
     },
-    '/bridges/%s/mohStart' % BRIDGE['id']: {
-        'POST': (
-            {},
-            HOLD_BRIDGE,
-        ),
-    },
-    '/bridges/%s/mohStop' % BRIDGE['id']: {
-        'POST': (
+    '/bridges/%s/moh' % BRIDGE['id']: {
+        'DELETE': (
             {},
             None,
+        ),
+        'POST': (
+            {},
+            MUSIC_BRIDGE,
         ),
     },
     '/bridges/%s/removeChannel' % BRIDGE['id']: {
@@ -107,6 +105,14 @@ class BridgeManagerTest(testtools.TestCase):
         self.assertEqual(self.api.calls, expect)
         self.assertTrue(res)
 
+    def test_add_music(self):
+        res = self.manager.add_music(bridge_id=BRIDGE['id'], **MUSIC_BRIDGE)
+        expect = [
+            ('POST', '/bridges/%s/moh' % BRIDGE['id'], {}, MUSIC_BRIDGE),
+        ]
+        self.assertEqual(self.api.calls, expect)
+        self.assertTrue(res)
+
     def test_create(self):
         res = self.manager.create(**CREATE_BRIDGE)
         expect = [
@@ -122,14 +128,6 @@ class BridgeManagerTest(testtools.TestCase):
         ]
         self.assertEqual(self.api.calls, expect)
         self.assertEqual(res, None)
-
-    def test_hold(self):
-        res = self.manager.hold(bridge_id=BRIDGE['id'], **HOLD_BRIDGE)
-        expect = [
-            ('POST', '/bridges/%s/mohStart' % BRIDGE['id'], {}, HOLD_BRIDGE),
-        ]
-        self.assertEqual(self.api.calls, expect)
-        self.assertTrue(res)
 
     def test_list(self):
         res = self.manager.list()
@@ -149,6 +147,14 @@ class BridgeManagerTest(testtools.TestCase):
         self.assertEqual(self.api.calls, expect)
         self.assertTrue(res)
 
+    def test_remove_music(self):
+        res = self.manager.remove_music(bridge_id=BRIDGE['id'])
+        expect = [
+            ('DELETE', '/bridges/%s/moh' % BRIDGE['id'], {}, None),
+        ]
+        self.assertEqual(self.api.calls, expect)
+        self.assertEqual(res, None)
+
     def test_show(self):
         res = self.manager.get(bridge_id=BRIDGE['id'])
         expect = [
@@ -156,11 +162,3 @@ class BridgeManagerTest(testtools.TestCase):
         ]
         self.assertEqual(self.api.calls, expect)
         self.assertEqual(res.id, BRIDGE['id'])
-
-    def test_unhold(self):
-        res = self.manager.unhold(bridge_id=BRIDGE['id'])
-        expect = [
-            ('POST', '/bridges/%s/mohStop' % BRIDGE['id'], {}, None),
-        ]
-        self.assertEqual(self.api.calls, expect)
-        self.assertEqual(res, None)

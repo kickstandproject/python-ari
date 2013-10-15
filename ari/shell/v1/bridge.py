@@ -45,12 +45,12 @@ class AddChannelBridge(base.CreateCommand):
         return body
 
 
-class AddHoldBridge(base.CreateCommand):
-    """Add a given bridge to hold."""
+class AddMusicBridge(base.CreateCommand):
+    """Add music to a given bridge."""
 
-    function = 'hold'
+    function = 'add_music'
     resource = 'bridges'
-    log = logging.getLogger(__name__ + '.AddHoldBridge')
+    log = logging.getLogger(__name__ + '.AddMusicBridge')
 
     def add_known_arguments(self, parser):
         parser.add_argument(
@@ -138,9 +138,9 @@ class ShowBridge(base.ShowCommand):
     resource = 'bridges'
 
 
-class RemoveHoldBridge(base.ShowCommand):
-    """Remove a given bridge from hold."""
+class RemoveMusicBridge(base.ShowCommand):
+    """Remove music from a given bridge."""
 
-    function = 'unhold'
+    function = 'remove_music'
     resource = 'bridges'
-    log = logging.getLogger(__name__ + '.RemoveHoldBridge')
+    log = logging.getLogger(__name__ + '.RemoveMusicBridge')

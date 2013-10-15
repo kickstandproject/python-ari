@@ -25,7 +25,7 @@ CREATE_ATTRIBUTES = [
     'type',
 ]
 
-HOLD_ATTRIBUTES = [
+MUSIC_ATTRIBUTES = [
     'mohClass',
 ]
 
@@ -78,11 +78,11 @@ class BridgeManager(base.Manager):
         except IndexError:
             return None
 
-    def hold(self, bridge_id, **kwargs):
-        path = '%s/%s' % (self._path(bridge_id), 'mohStart')
+    def add_music(self, bridge_id, **kwargs):
+        path = '%s/%s' % (self._path(bridge_id), 'moh')
 
         return self.__create(
-            attributes=HOLD_ATTRIBUTES, path=path, **kwargs)
+            attributes=MUSIC_ATTRIBUTES, path=path, **kwargs)
 
     def list(self):
         return self._list(self._path())
@@ -93,7 +93,7 @@ class BridgeManager(base.Manager):
         return self.__create(
             attributes=ADD_ATTRIBUTES, path=path, **kwargs)
 
-    def unhold(self, bridge_id):
-        path = '%s/%s' % (self._path(bridge_id), 'mohStop')
+    def remove_music(self, bridge_id):
+        path = '%s/%s' % (self._path(bridge_id), 'moh')
 
-        return self._create(path, None)
+        return self._delete(path)
