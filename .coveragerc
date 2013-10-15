@@ -1,7 +1,7 @@
 [run]
 branch = True
 source = ari
-omit = ari/tests/*,ari/openstack/*
+omit = ari/openstack/*
 
 [report]
 ignore-errors = True
