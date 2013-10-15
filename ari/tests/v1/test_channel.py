@@ -107,6 +107,10 @@ FIXTURES = {
         ),
     },
     '/channels/%s/hold' % CHANNEL['id']: {
+        'DELETE': (
+            {},
+            None,
+        ),
         'POST': (
             {},
             None,
@@ -116,12 +120,6 @@ FIXTURES = {
         'POST': (
             {},
             MUTE_CHANNEL,
-        ),
-    },
-    '/channels/%s/unhold' % CHANNEL['id']: {
-        'POST': (
-            {},
-            None,
         ),
     },
     '/channels/%s/unmute' % CHANNEL['id']: {
@@ -218,7 +216,7 @@ class ChannelManagerTest(testtools.TestCase):
     def test_unhold(self):
         res = self.manager.unhold(channel_id=CHANNEL['id'])
         expect = [
-            ('POST', '/channels/%s/unhold' % CHANNEL['id'], {}, None),
+            ('DELETE', '/channels/%s/hold' % CHANNEL['id'], {}, None),
         ]
         self.assertEqual(self.api.calls, expect)
         self.assertEqual(res, None)

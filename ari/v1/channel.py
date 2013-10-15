@@ -115,9 +115,9 @@ class ChannelManager(base.Manager):
             attributes=MUTE_ATTRIBUTES, path=path, **kwargs)
 
     def unhold(self, channel_id):
-        path = '%s/%s' % (self._path(channel_id), 'unhold')
+        path = '%s/%s' % (self._path(channel_id), 'hold')
 
-        return self._create(path, None)
+        return self._delete(path)
 
     def unmute(self, channel_id, **kwargs):
         path = '%s/%s' % (self._path(channel_id), 'unmute')
