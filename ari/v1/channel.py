@@ -16,13 +16,6 @@
 from ari.common import base
 from ari import exception
 
-DIAL_ATTRIBUTES = [
-    'context',
-    'endpoint',
-    'extension',
-    'timeout',
-]
-
 CREATE_ATTRIBUTES = [
     'app',
     'appArgs',
@@ -32,6 +25,23 @@ CREATE_ATTRIBUTES = [
     'extension',
     'priority',
     'timeout',
+]
+
+DIAL_ATTRIBUTES = [
+    'context',
+    'endpoint',
+    'extension',
+    'timeout',
+]
+
+EXIT_ATTRIBUTES = [
+    'context',
+    'extension',
+    'priority',
+]
+
+MUTE_ATTRIBUTES = [
+    'direction',
 ]
 
 
@@ -78,6 +88,12 @@ class ChannelManager(base.Manager):
         return self.__create(
             attributes=DIAL_ATTRIBUTES, path=path, **kwargs)
 
+    def exit(self, channel_id, **kwargs):
+        path = '%s/%s' % (self._path(channel_id), 'continue')
+
+        return self.__create(
+            attributes=EXIT_ATTRIBUTES, path=path, **kwargs)
+
     def get(self, channel_id):
         try:
             return self._list(self._path(channel_id))[0]
@@ -86,3 +102,25 @@ class ChannelManager(base.Manager):
 
     def list(self):
         return self._list(self._path())
+
+    def hold(self, channel_id):
+        path = '%s/%s' % (self._path(channel_id), 'hold')
+
+        return self._create(path, None)
+
+    def mute(self, channel_id, **kwargs):
+        path = '%s/%s' % (self._path(channel_id), 'mute')
+
+        return self.__create(
+            attributes=MUTE_ATTRIBUTES, path=path, **kwargs)
+
+    def unhold(self, channel_id):
+        path = '%s/%s' % (self._path(channel_id), 'unhold')
+
+        return self._create(path, None)
+
+    def unmute(self, channel_id, **kwargs):
+        path = '%s/%s' % (self._path(channel_id), 'unmute')
+
+        return self.__create(
+            attributes=MUTE_ATTRIBUTES, path=path, **kwargs)

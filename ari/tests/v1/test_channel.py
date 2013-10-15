@@ -57,6 +57,16 @@ DIAL_CHANNEL = {
     'timeout': 30,
 }
 
+EXIT_CHANNEL = {
+    'context': 'demo',
+    'extension': 's',
+    'priority': '1',
+}
+
+MUTE_CHANNEL = {
+    'direction': 'both',
+}
+
 FIXTURES = {
     '/channels': {
         'GET': (
@@ -84,10 +94,40 @@ FIXTURES = {
             None,
         ),
     },
+    '/channels/%s/continue' % CHANNEL['id']: {
+        'POST': (
+            {},
+            None,
+        ),
+    },
     '/channels/%s/dial' % CHANNEL['id']: {
         'POST': (
             {},
             DIAL_CHANNEL,
+        ),
+    },
+    '/channels/%s/hold' % CHANNEL['id']: {
+        'POST': (
+            {},
+            None,
+        ),
+    },
+    '/channels/%s/mute' % CHANNEL['id']: {
+        'POST': (
+            {},
+            MUTE_CHANNEL,
+        ),
+    },
+    '/channels/%s/unhold' % CHANNEL['id']: {
+        'POST': (
+            {},
+            None,
+        ),
+    },
+    '/channels/%s/unmute' % CHANNEL['id']: {
+        'POST': (
+            {},
+            MUTE_CHANNEL,
         ),
     },
 }
@@ -108,30 +148,6 @@ class ChannelManagerTest(testtools.TestCase):
         self.assertEqual(self.api.calls, expect)
         self.assertEqual(res, None)
 
-    def test_dial(self):
-        res = self.manager.dial(channel_id=CHANNEL['id'], **DIAL_CHANNEL)
-        expect = [
-            ('POST', '/channels/%s/dial' % CHANNEL['id'], {}, DIAL_CHANNEL),
-        ]
-        self.assertEqual(self.api.calls, expect)
-        self.assertTrue(res)
-
-    def test_list(self):
-        res = self.manager.list()
-        expect = [
-            ('GET', '/channels', {}, None),
-        ]
-        self.assertEqual(self.api.calls, expect)
-        self.assertEqual(len(res), 1)
-
-    def test_show(self):
-        res = self.manager.get(channel_id=CHANNEL['id'])
-        expect = [
-            ('GET', '/channels/%s' % CHANNEL['id'], {}, None),
-        ]
-        self.assertEqual(self.api.calls, expect)
-        self.assertEqual(res.id, CHANNEL['id'])
-
     def test_create(self):
         res = self.manager.create(**CREATE_CHANNEL)
         expect = [
@@ -147,3 +163,70 @@ class ChannelManagerTest(testtools.TestCase):
         ]
         self.assertEqual(self.api.calls, expect)
         self.assertEqual(res, None)
+
+    def test_dial(self):
+        res = self.manager.dial(channel_id=CHANNEL['id'], **DIAL_CHANNEL)
+        expect = [
+            ('POST', '/channels/%s/dial' % CHANNEL['id'], {}, DIAL_CHANNEL),
+        ]
+        self.assertEqual(self.api.calls, expect)
+        self.assertTrue(res)
+
+    def test_exit(self):
+        res = self.manager.exit(
+            channel_id=CHANNEL['id'], **EXIT_CHANNEL)
+        expect = [
+            (
+                'POST', '/channels/%s/continue' % CHANNEL['id'], {},
+                EXIT_CHANNEL),
+        ]
+        self.assertEqual(self.api.calls, expect)
+        self.assertEqual(res, None)
+
+    def test_hold(self):
+        res = self.manager.hold(channel_id=CHANNEL['id'])
+        expect = [
+            ('POST', '/channels/%s/hold' % CHANNEL['id'], {}, None),
+        ]
+        self.assertEqual(self.api.calls, expect)
+        self.assertEqual(res, None)
+
+    def test_list(self):
+        res = self.manager.list()
+        expect = [
+            ('GET', '/channels', {}, None),
+        ]
+        self.assertEqual(self.api.calls, expect)
+        self.assertEqual(len(res), 1)
+
+    def test_mute(self):
+        res = self.manager.mute(channel_id=CHANNEL['id'], **MUTE_CHANNEL)
+        expect = [
+            ('POST', '/channels/%s/mute' % CHANNEL['id'], {}, MUTE_CHANNEL),
+        ]
+        self.assertEqual(self.api.calls, expect)
+        self.assertTrue(res)
+
+    def test_show(self):
+        res = self.manager.get(channel_id=CHANNEL['id'])
+        expect = [
+            ('GET', '/channels/%s' % CHANNEL['id'], {}, None),
+        ]
+        self.assertEqual(self.api.calls, expect)
+        self.assertEqual(res.id, CHANNEL['id'])
+
+    def test_unhold(self):
+        res = self.manager.unhold(channel_id=CHANNEL['id'])
+        expect = [
+            ('POST', '/channels/%s/unhold' % CHANNEL['id'], {}, None),
+        ]
+        self.assertEqual(self.api.calls, expect)
+        self.assertEqual(res, None)
+
+    def test_unmute(self):
+        res = self.manager.unmute(channel_id=CHANNEL['id'], **MUTE_CHANNEL)
+        expect = [
+            ('POST', '/channels/%s/unmute' % CHANNEL['id'], {}, MUTE_CHANNEL),
+        ]
+        self.assertEqual(self.api.calls, expect)
+        self.assertTrue(res)

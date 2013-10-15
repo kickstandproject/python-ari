@@ -26,40 +26,33 @@ class AnswerChannel(base.ShowCommand):
     log = logging.getLogger(__name__ + '.AnswerChannel')
 
 
-class DialChannel(base.CreateCommand):
-    """Dial a given channel."""
+class AddHoldChannel(base.ShowCommand):
+    """Add a given channel to hold."""
 
-    function = 'dial'
-    log = logging.getLogger(__name__ + '.DialChannel')
+    function = 'hold'
     resource = 'channels'
+    log = logging.getLogger(__name__ + '.AddHoldChannel')
+
+
+class AddMuteChannel(base.CreateCommand):
+    """Add a given channel to mute."""
+
+    function = 'mute'
+    resource = 'channels'
+    log = logging.getLogger(__name__ + '.AddMuteChannel')
 
     def add_known_arguments(self, parser):
         parser.add_argument(
-            '--context', help='The context to dial after the endpoint'
-            ' answers. (Default: demo)')
-        parser.add_argument(
-            '--endpoint', help='Endpoint to call.')
-        parser.add_argument(
-            '--extension', help='The extension to dial after the endpoint'
-            ' answers.')
-        parser.add_argument(
-            '--timeout', help='The timeout (in seconds) before giving up'
-            ' dialing.')
+            '--direction', default='both',
+            help='Direction in which to mute the audio.')
         parser.add_argument(
             'channel_id', metavar='CHANNEL', help='Channel id to use.')
 
     def args2body(self, parsed_args):
         body = {
-            'channel_id': parsed_args.channel_id
+            'channel_id': parsed_args.channel_id,
+            'direction': parsed_args.direction,
         }
-        if parsed_args.context:
-            body['context'] = parsed_args.context
-        if parsed_args.endpoint:
-            body['endpoint'] = parsed_args.endpoint
-        if parsed_args.extension:
-            body['extension'] = parsed_args.extension
-        if parsed_args.timeout:
-            body['timeout'] = parsed_args.timeout
 
         return body
 
@@ -124,6 +117,75 @@ class DeleteChannel(base.DeleteCommand):
     resource = 'channels'
 
 
+class DialChannel(base.CreateCommand):
+    """Dial a given channel."""
+
+    function = 'dial'
+    log = logging.getLogger(__name__ + '.DialChannel')
+    resource = 'channels'
+
+    def add_known_arguments(self, parser):
+        parser.add_argument(
+            '--context', help='The context to dial after the endpoint'
+            ' answers. (Default: demo)')
+        parser.add_argument(
+            '--endpoint', help='Endpoint to call.')
+        parser.add_argument(
+            '--extension', help='The extension to dial after the endpoint'
+            ' answers.')
+        parser.add_argument(
+            '--timeout', help='The timeout (in seconds) before giving up'
+            ' dialing.')
+        parser.add_argument(
+            'channel_id', metavar='CHANNEL', help='Channel id to use.')
+
+    def args2body(self, parsed_args):
+        body = {
+            'channel_id': parsed_args.channel_id
+        }
+        if parsed_args.context:
+            body['context'] = parsed_args.context
+        if parsed_args.endpoint:
+            body['endpoint'] = parsed_args.endpoint
+        if parsed_args.extension:
+            body['extension'] = parsed_args.extension
+        if parsed_args.timeout:
+            body['timeout'] = parsed_args.timeout
+
+        return body
+
+
+class ExitChannel(base.CreateCommand):
+    """Exit a given channel."""
+
+    function = 'exit'
+    log = logging.getLogger(__name__ + '.DialChannel')
+    resource = 'channels'
+
+    def add_known_arguments(self, parser):
+        parser.add_argument(
+            '--context', help='The context to use.')
+        parser.add_argument(
+            '--extension', help='The extension to use.')
+        parser.add_argument(
+            '--priority', help='The priority to use.')
+        parser.add_argument(
+            'channel_id', metavar='CHANNEL', help='Channel id to use.')
+
+    def args2body(self, parsed_args):
+        body = {
+            'channel_id': parsed_args.channel_id
+        }
+        if parsed_args.context:
+            body['context'] = parsed_args.context
+        if parsed_args.extension:
+            body['extension'] = parsed_args.extension
+        if parsed_args.priority:
+            body['priority'] = parsed_args.timeout
+
+        return body
+
+
 class ListChannel(base.ListCommand):
     """List channels."""
 
@@ -139,6 +201,22 @@ class ListChannel(base.ListCommand):
     ]
     log = logging.getLogger(__name__ + '.ListChannel')
     resource = 'channels'
+
+
+class RemoveHoldChannel(base.ShowCommand):
+    """Remove a given channel from hold."""
+
+    function = 'unhold'
+    resource = 'channels'
+    log = logging.getLogger(__name__ + '.RemoveHoldChannel')
+
+
+class RemoveMuteChannel(AddMuteChannel):
+    """Remove a given channel to mute."""
+
+    function = 'unmute'
+    resource = 'channels'
+    log = logging.getLogger(__name__ + '.RemoveMuteChannel')
 
 
 class ShowChannel(base.ShowCommand):
