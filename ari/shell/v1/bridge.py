@@ -18,6 +18,57 @@ import logging
 from ari.shell.v1 import base
 
 
+class AddChannelBridge(base.CreateCommand):
+    """Add a given channel to bridge."""
+
+    function = 'add'
+    resource = 'bridges'
+    log = logging.getLogger(__name__ + '.AddChannelBridge')
+
+    def add_known_arguments(self, parser):
+        parser.add_argument(
+            '--role', help='Channels role in the bridge.')
+        parser.add_argument(
+            'bridge_id', metavar='BRIDGE', help='Bridge id to use.')
+        parser.add_argument(
+            'channel_id', metavar='CHANNEL', help='Channel id to use.')
+
+    def args2body(self, parsed_args):
+        body = {
+            'bridge_id': parsed_args.bridge_id,
+            'channel': parsed_args.channel_id,
+        }
+
+        if parsed_args.role:
+            body['role'] = parsed_args.role
+
+        return body
+
+
+class AddHoldBridge(base.CreateCommand):
+    """Add a given bridge to hold."""
+
+    function = 'hold'
+    resource = 'bridges'
+    log = logging.getLogger(__name__ + '.AddHoldBridge')
+
+    def add_known_arguments(self, parser):
+        parser.add_argument(
+            '--moh_class', help='Which class to use.')
+        parser.add_argument(
+            'bridge_id', metavar='BRIDGE', help='Bridge id to use.')
+
+    def args2body(self, parsed_args):
+        body = {
+            'bridge_id': parsed_args.bridge_id,
+        }
+
+        if parsed_args.moh_class:
+            body['mohClass'] = parsed_args.moh_class
+
+        return body
+
+
 class CreateBridge(base.CreateCommand):
     """Create a bridge."""
 
@@ -26,8 +77,8 @@ class CreateBridge(base.CreateCommand):
 
     def add_known_arguments(self, parser):
         parser.add_argument(
-            'bridge_type', metavar='BRIDGE_TYPE',
-            help='Type of bridge to create.')
+            '--bridge_type', default='mixing', help='Type of bridge to'
+            ' create.')
 
     def args2body(self, parsed_args):
         body = {
@@ -58,8 +109,38 @@ class ListBridge(base.ListCommand):
     resource = 'bridges'
 
 
+class RemoveChannelBridge(base.CreateCommand):
+    """Remove a given channel from bridge."""
+
+    function = 'remove'
+    resource = 'bridges'
+    log = logging.getLogger(__name__ + '.RemoveChannelBridge')
+
+    def add_known_arguments(self, parser):
+        parser.add_argument(
+            'bridge_id', metavar='BRIDGE', help='Bridge id to use.')
+        parser.add_argument(
+            'channel_id', metavar='CHANNEL', help='Channel id to use.')
+
+    def args2body(self, parsed_args):
+        body = {
+            'bridge_id': parsed_args.bridge_id,
+            'channel': parsed_args.channel_id,
+        }
+
+        return body
+
+
 class ShowBridge(base.ShowCommand):
     """Show information of a given bridge."""
 
     log = logging.getLogger(__name__ + '.ShowBridge')
     resource = 'bridges'
+
+
+class RemoveHoldBridge(base.ShowCommand):
+    """Remove a given bridge from hold."""
+
+    function = 'unhold'
+    resource = 'bridges'
+    log = logging.getLogger(__name__ + '.RemoveHoldBridge')

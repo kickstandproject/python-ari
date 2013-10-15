@@ -16,8 +16,21 @@
 from ari.common import base
 from ari import exception
 
-CREATION_ATTRIBUTES = [
+ADD_ATTRIBUTES = [
+    'channel',
+    'role',
+]
+
+CREATE_ATTRIBUTES = [
     'type',
+]
+
+HOLD_ATTRIBUTES = [
+    'mohClass',
+]
+
+REMOVE_ATTRIBUTES = [
+    'channel',
 ]
 
 
@@ -30,19 +43,31 @@ class BridgeManager(base.Manager):
 
     resource_class = Bridge
 
-    @staticmethod
-    def _path(id=None):
-        return '/bridges/%s' % id if id else '/bridges'
-
-    def create(self, **kwargs):
+    def __create(self, attributes, path, **kwargs):
         keys = {}
         for (key, value) in kwargs.items():
-            if key in CREATION_ATTRIBUTES:
+            if key in attributes:
                 keys[key] = value
             else:
                 raise exception.InvalidAttribute()
 
-        return self._create(self._path(), keys)
+        return self._create(path, keys)
+
+    @staticmethod
+    def _path(id=None):
+        return '/bridges/%s' % id if id else '/bridges'
+
+    def add(self, bridge_id, **kwargs):
+        path = '%s/%s' % (self._path(bridge_id), 'addChannel')
+
+        return self.__create(
+            attributes=ADD_ATTRIBUTES, path=path, **kwargs)
+
+    def create(self, **kwargs):
+        path = self._path()
+
+        return self.__create(
+            attributes=CREATE_ATTRIBUTES, path=path, **kwargs)
 
     def delete(self, bridge_id):
         return self._delete(self._path(bridge_id))
@@ -53,5 +78,22 @@ class BridgeManager(base.Manager):
         except IndexError:
             return None
 
+    def hold(self, bridge_id, **kwargs):
+        path = '%s/%s' % (self._path(bridge_id), 'mohStart')
+
+        return self.__create(
+            attributes=HOLD_ATTRIBUTES, path=path, **kwargs)
+
     def list(self):
         return self._list(self._path())
+
+    def remove(self, bridge_id, **kwargs):
+        path = '%s/%s' % (self._path(bridge_id), 'removeChannel')
+
+        return self.__create(
+            attributes=ADD_ATTRIBUTES, path=path, **kwargs)
+
+    def unhold(self, bridge_id):
+        path = '%s/%s' % (self._path(bridge_id), 'mohStop')
+
+        return self._create(path, None)

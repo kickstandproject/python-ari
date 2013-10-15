@@ -38,8 +38,12 @@ CONF = cfg.CONF
 COMMAND = {
     'application-list': application.ListApplication,
     'application-show': application.ShowApplication,
+    'bridge-channel-add': bridge.AddChannelBridge,
+    'bridge-channel-remove': bridge.RemoveChannelBridge,
     'bridge-create': bridge.CreateBridge,
     'bridge-delete': bridge.DeleteBridge,
+    'bridge-hold-add': bridge.AddHoldBridge,
+    'bridge-hold-remove': bridge.RemoveHoldBridge,
     'bridge-list': bridge.ListBridge,
     'bridge-show': bridge.ShowBridge,
     'channel-answer': channel.AnswerChannel,
