@@ -4,21 +4,24 @@
    contain the root `toctree` directive.
 
 Welcome to python-ari's documentation!
-========================================================
+======================================
 
 Contents:
 
 .. toctree::
    :maxdepth: 2
 
-   readme
    installation
-   usage
    contributing
 
-Indices and tables
-==================
+API Documentation
+=================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+The source code is well documented using Python docstrings and
+comments. In addition, we have generated API documentation from the
+docstrings here:
+
+.. toctree::
+   :maxdepth: 1
+
+   v1_channel
