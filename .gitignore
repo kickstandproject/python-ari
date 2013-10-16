@@ -23,10 +23,11 @@ pip-log.txt
 
 # Unit test / coverage reports
 .coverage
-.tox
-nosetests.xml
 .testrepository
+.tox
+.venv
 cover
+nosetests.xml
 
 # Translations
 *.mo
