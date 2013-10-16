@@ -40,6 +40,10 @@ EXIT_ATTRIBUTES = [
     'priority',
 ]
 
+MUSIC_ATTRIBUTES = [
+    'mohClass',
+]
+
 MUTE_ATTRIBUTES = [
     'direction',
 ]
@@ -68,6 +72,12 @@ class ChannelManager(base.Manager):
     @staticmethod
     def _path(id=None):
         return '/channels/%s' % id if id else '/channels'
+
+    def add_music(self, channel_id, **kwargs):
+        path = '%s/%s' % (self._path(channel_id), 'moh')
+
+        return self.__create(
+            attributes=MUSIC_ATTRIBUTES, path=path, **kwargs)
 
     def answer(self, channel_id):
         path = '%s/%s' % (self._path(channel_id), 'answer')
@@ -113,6 +123,11 @@ class ChannelManager(base.Manager):
 
         return self.__create(
             attributes=MUTE_ATTRIBUTES, path=path, **kwargs)
+
+    def remove_music(self, channel_id):
+        path = '%s/%s' % (self._path(channel_id), 'moh')
+
+        return self._delete(path)
 
     def unhold(self, channel_id):
         path = '%s/%s' % (self._path(channel_id), 'hold')

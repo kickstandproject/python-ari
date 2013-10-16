@@ -63,6 +63,10 @@ EXIT_CHANNEL = {
     'priority': '1',
 }
 
+MUSIC_CHANNEL = {
+    'mohClass': 'default',
+}
+
 MUTE_CHANNEL = {
     'direction': 'both',
 }
@@ -116,6 +120,16 @@ FIXTURES = {
             None,
         ),
     },
+    '/channels/%s/moh' % CHANNEL['id']: {
+        'DELETE': (
+            {},
+            None,
+        ),
+        'POST': (
+            {},
+            MUSIC_CHANNEL,
+        ),
+    },
     '/channels/%s/mute' % CHANNEL['id']: {
         'POST': (
             {},
@@ -137,6 +151,14 @@ class ChannelManagerTest(testtools.TestCase):
         super(ChannelManagerTest, self).setUp()
         self.api = utils.FakeAPI(FIXTURES)
         self.manager = channel.ChannelManager(self.api)
+
+    def test_add_music(self):
+        res = self.manager.add_music(channel_id=CHANNEL['id'], **MUSIC_CHANNEL)
+        expect = [
+            ('POST', '/channels/%s/moh' % CHANNEL['id'], {}, MUSIC_CHANNEL),
+        ]
+        self.assertEqual(self.api.calls, expect)
+        self.assertTrue(res)
 
     def test_answer(self):
         res = self.manager.answer(channel_id=CHANNEL['id'])
@@ -204,6 +226,14 @@ class ChannelManagerTest(testtools.TestCase):
         ]
         self.assertEqual(self.api.calls, expect)
         self.assertTrue(res)
+
+    def test_remove_music(self):
+        res = self.manager.remove_music(channel_id=CHANNEL['id'])
+        expect = [
+            ('DELETE', '/channels/%s/moh' % CHANNEL['id'], {}, None),
+        ]
+        self.assertEqual(self.api.calls, expect)
+        self.assertEqual(res, None)
 
     def test_show(self):
         res = self.manager.get(channel_id=CHANNEL['id'])

@@ -54,6 +54,8 @@ COMMAND = {
     'channel-hold-add': channel.AddHoldChannel,
     'channel-hold-remove': channel.RemoveHoldChannel,
     'channel-list': channel.ListChannel,
+    'channel-music-add': channel.AddMusicChannel,
+    'channel-music-remove': channel.RemoveMusicChannel,
     'channel-mute-add': channel.AddMuteChannel,
     'channel-mute-remove': channel.RemoveMuteChannel,
     'channel-show': channel.ShowChannel,

@@ -18,6 +18,30 @@ import logging
 from ari.shell.v1 import base
 
 
+class AddMusicChannel(base.CreateCommand):
+    """Add music to a given channel."""
+
+    function = 'add_music'
+    resource = 'channels'
+    log = logging.getLogger(__name__ + '.AddMusicChannel')
+
+    def add_known_arguments(self, parser):
+        parser.add_argument(
+            '--moh_class', help='Which class to use.')
+        parser.add_argument(
+            'channel_id', metavar='CHANNEL', help='Channel id to use.')
+
+    def args2body(self, parsed_args):
+        body = {
+            'channel_id': parsed_args.channel_id,
+        }
+
+        if parsed_args.moh_class:
+            body['mohClass'] = parsed_args.moh_class
+
+        return body
+
+
 class AnswerChannel(base.ShowCommand):
     """Answer a given channel."""
 
@@ -209,6 +233,14 @@ class RemoveHoldChannel(base.ShowCommand):
     function = 'unhold'
     resource = 'channels'
     log = logging.getLogger(__name__ + '.RemoveHoldChannel')
+
+
+class RemoveMusicChannel(base.ShowCommand):
+    """Remove music from a given channel."""
+
+    function = 'remove_music'
+    resource = 'channels'
+    log = logging.getLogger(__name__ + '.RemoveMusicChannel')
 
 
 class RemoveMuteChannel(AddMuteChannel):
