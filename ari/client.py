@@ -31,6 +31,10 @@ def get_client(api_version, **kwargs):
         token = 'Basic %s' % auth
 
     cli_kwargs = {
+        'ca_file': kwargs.get('ca_file'),
+        'cert_file': kwargs.get('cert_file'),
+        'insecure': kwargs.get('insecure'),
+        'key_file': kwargs.get('key_file'),
         'token': token
     }
 

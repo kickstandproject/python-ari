@@ -120,20 +120,28 @@ class Shell(app.App):
         parser.add_argument(
             '--ari-url',
             default=utils.env('ARI_URL'),
-            help='Defaults to env[ARI_URL]',
-        )
-
+            help='Defaults to env[ARI_URL]')
         parser.add_argument(
             '--ari-username',
             default=utils.env('ARI_USERNAME'),
-            help='Defaults to env[ARI_USERNAME]',
-        )
-
+            help='Defaults to env[ARI_USERNAME]')
         parser.add_argument(
             '--ari-password',
             default=utils.env('ARI_PASSWORD'),
-            help='Defaults to env[ARI_PASSWORD]',
-        )
+            help='Defaults to env[ARI_PASSWORD]')
+        parser.add_argument(
+            '--ca-file', help='Path of CA SSL certificate(s) used to verify '
+            'the remote server certificate. Without this option we look for '
+            'the default system CA certificates')
+        parser.add_argument(
+            '--cert-file', help='Path of certificate file to use in SSL '
+            'connection')
+        parser.add_argument(
+            '-k', '--insecure', default=False, action='store_true',
+            help="Explicitly allow \"insecure\" SSL (https) requests. The "
+            "server's certificate will not be verified against any "
+            "certificate authorities. This options should be used with "
+            "caution")
 
         return parser
 

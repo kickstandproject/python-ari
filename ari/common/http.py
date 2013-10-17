@@ -17,7 +17,9 @@
 import copy
 import httplib
 import logging
+import os
 import socket
+import ssl
 import StringIO
 import urllib
 import urlparse
@@ -115,7 +117,13 @@ class HTTPClient(object):
                         if kwargs.get('timeout') else 600)
         }
 
-        if parts.scheme == 'http':
+        if parts.scheme == 'https':
+            _class = VerifiedHTTPSConnection
+            _kwargs['ca_file'] = kwargs.get('ca_file', None)
+            _kwargs['cert_file'] = kwargs.get('cert_file', None)
+            _kwargs['key_file'] = kwargs.get('key_file', None)
+            _kwargs['insecure'] = kwargs.get('insecure', False)
+        elif parts.scheme == 'http':
             _class = httplib.HTTPConnection
         else:
             msg = 'Unsupported scheme: %s' % parts.scheme
@@ -221,3 +229,65 @@ class ResponseBodyIterator(object):
             return chunk
         else:
             raise StopIteration()
+
+
+class VerifiedHTTPSConnection(httplib.HTTPSConnection):
+    """httplib-compatibile connection using client-side SSL authentication
+
+    :see http://code.activestate.com/recipes/
+            577548-https-httplib-client-connection-with-certificate-v/
+    """
+
+    def __init__(self, host, port, key_file=None, cert_file=None,
+                 ca_file=None, timeout=None, insecure=False):
+        httplib.HTTPSConnection.__init__(self, host, port, key_file=key_file,
+                                         cert_file=cert_file)
+        self.key_file = key_file
+        self.cert_file = cert_file
+        if ca_file is not None:
+            self.ca_file = ca_file
+        else:
+            self.ca_file = self.get_system_ca_file()
+        self.timeout = timeout
+        self.insecure = insecure
+
+    def connect(self):
+        """Connect to a host on a given (SSL) port.
+        If ca_file is pointing somewhere, use it to check Server Certificate.
+
+        Redefined/copied and extended from httplib.py:1105 (Python 2.6.x).
+        This is needed to pass cert_reqs=ssl.CERT_REQUIRED as parameter to
+        ssl.wrap_socket(), which forces SSL to check server certificate against
+        our client certificate.
+        """
+        sock = socket.create_connection((self.host, self.port), self.timeout)
+
+        if self._tunnel_host:
+            self.sock = sock
+            self._tunnel()
+
+        if self.insecure is True:
+            kwargs = {'cert_reqs': ssl.CERT_NONE}
+        else:
+            kwargs = {'cert_reqs': ssl.CERT_REQUIRED, 'ca_certs': self.ca_file}
+
+        if self.cert_file:
+            kwargs['certfile'] = self.cert_file
+            if self.key_file:
+                kwargs['keyfile'] = self.key_file
+
+        self.sock = ssl.wrap_socket(sock, **kwargs)
+
+    @staticmethod
+    def get_system_ca_file():
+        """Return path to system default CA file."""
+        # Standard CA file locations for Debian/Ubuntu, RedHat/Fedora,
+        # Suse, FreeBSD/OpenBSD
+        ca_path = ['/etc/ssl/certs/ca-certificates.crt',
+                   '/etc/pki/tls/certs/ca-bundle.crt',
+                   '/etc/ssl/ca-bundle.pem',
+                   '/etc/ssl/cert.pem']
+        for ca in ca_path:
+            if os.path.exists(ca):
+                return ca
+        return None

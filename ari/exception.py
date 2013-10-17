@@ -40,12 +40,16 @@ class BaseException(Exception):
         return self.message or self.__class__.__doc__
 
 
+class ClientException(Exception):
+    """DEPRECATED."""
+
+
 class CommandError(BaseException):
     """Invalid usage of CLI."""
 
 
-class ClientException(Exception):
-    """DEPRECATED."""
+class CommunicationError(BaseException):
+    """Unable to communicate with server."""
 
 
 class HTTPException(ClientException):
@@ -62,3 +66,7 @@ class HTTPException(ClientException):
 
 class InvalidAttribute(BaseException):
     pass
+
+
+class InvalidEndpoint(BaseException):
+    """The provided endpoint is invalid."""
