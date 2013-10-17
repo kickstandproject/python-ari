@@ -173,6 +173,16 @@ class HTTPClient(object):
             header = '-H \'%s: %s\'' % (key, value)
             curl.append(header)
 
+        conn_params_fmt = [
+            ('key_file', '--key %s'),
+            ('cert_file', '--cert %s'),
+            ('ca_file', '--cacert %s'),
+        ]
+        for (key, fmt) in conn_params_fmt:
+            value = self.connection_params[2].get(key)
+            if value:
+                curl.append(fmt % value)
+
         if self.connection_params[2].get('insecure'):
             curl.append('-k')
 
