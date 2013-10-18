@@ -38,6 +38,7 @@ CONF = cfg.CONF
 COMMAND = {
     'application-list': application.ListApplication,
     'application-show': application.ShowApplication,
+    'bridge-audio-add': bridge.AddAudioBridge,
     'bridge-channel-add': bridge.AddChannelBridge,
     'bridge-channel-remove': bridge.RemoveChannelBridge,
     'bridge-create': bridge.CreateBridge,
@@ -47,6 +48,7 @@ COMMAND = {
     'bridge-music-remove': bridge.RemoveMusicBridge,
     'bridge-show': bridge.ShowBridge,
     'channel-answer': channel.AnswerChannel,
+    'channel-audio-add': channel.AddAudioChannel,
     'channel-exit': channel.ExitChannel,
     'channel-create': channel.CreateChannel,
     'channel-delete': channel.DeleteChannel,

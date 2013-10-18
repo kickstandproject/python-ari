@@ -33,6 +33,13 @@ REMOVE_ATTRIBUTES = [
     'channel',
 ]
 
+PLAY_ATTRIBUTES = [
+    'media',
+    'lang',
+    'offsetms',
+    'skipms',
+]
+
 
 class Bridge(base.Resource):
     def __repr__(self):
@@ -56,6 +63,12 @@ class BridgeManager(base.Manager):
     @staticmethod
     def _path(id=None):
         return '/bridges/%s' % id if id else '/bridges'
+
+    def add_audio(self, bridge_id, **kwargs):
+        path = '%s/%s' % (self._path(bridge_id), 'play')
+
+        return self.__create(
+            attributes=PLAY_ATTRIBUTES, path=path, **kwargs)
 
     def add(self, bridge_id, **kwargs):
         path = '%s/%s' % (self._path(bridge_id), 'addChannel')

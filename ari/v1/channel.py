@@ -48,6 +48,13 @@ MUTE_ATTRIBUTES = [
     'direction',
 ]
 
+PLAY_ATTRIBUTES = [
+    'media',
+    'lang',
+    'offsetms',
+    'skipms',
+]
+
 
 class Channel(base.Resource):
     def __repr__(self):
@@ -73,6 +80,12 @@ class ChannelManager(base.Manager):
     @staticmethod
     def _path(id=None):
         return '/channels/%s' % id if id else '/channels'
+
+    def add_audio(self, channel_id, **kwargs):
+        path = '%s/%s' % (self._path(channel_id), 'play')
+
+        return self.__create(
+            attributes=PLAY_ATTRIBUTES, path=path, **kwargs)
 
     def add_music(self, channel_id, **kwargs):
         """Add music to the given channel.
@@ -137,11 +150,6 @@ class ChannelManager(base.Manager):
         except IndexError:
             return None
 
-    def list(self):
-        """List active channels."""
-
-        return self._list(self._path())
-
     def hold(self, channel_id):
         """Place the given channel on hold.
 
@@ -151,6 +159,11 @@ class ChannelManager(base.Manager):
         path = '%s/%s' % (self._path(channel_id), 'hold')
 
         return self._create(path, None)
+
+    def list(self):
+        """List active channels."""
+
+        return self._list(self._path())
 
     def mute(self, channel_id, **kwargs):
         """Mute the given channel.

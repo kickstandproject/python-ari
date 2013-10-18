@@ -18,6 +18,39 @@ import logging
 from ari.shell.v1 import base
 
 
+class AddAudioChannel(base.CreateCommand):
+    """Add audio to a given channel."""
+
+    function = 'add_audio'
+    resource = 'channels'
+    log = logging.getLogger(__name__ + '.AddAudioChannel')
+
+    def add_known_arguments(self, parser):
+        parser.add_argument(
+            '--offset', help='How long to skip (in milliseconds) before '
+            'playing the audio.')
+        parser.add_argument(
+            '--skip', help='Number of milliseconds to skip forward and '
+            'reverse while using the Playback resource.')
+        parser.add_argument(
+            'channel_id', metavar='CHANNEL', help='Channel id to use.')
+        parser.add_argument(
+            'uri', metavar='URI', help='Media URI to use.')
+
+    def args2body(self, parsed_args):
+        body = {
+            'channel_id': parsed_args.channel_id,
+            'media': parsed_args.uri,
+        }
+
+        if parsed_args.offset:
+            body['offsetms'] = parsed_args.offset
+        if parsed_args.skip:
+            body['skipms'] = parsed_args.skip
+
+        return body
+
+
 class AddMusicChannel(base.CreateCommand):
     """Add music to a given channel."""
 

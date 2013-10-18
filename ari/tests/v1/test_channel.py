@@ -71,6 +71,13 @@ MUTE_CHANNEL = {
     'direction': 'both',
 }
 
+PLAY_CHANNEL = {
+    'media': 'sound:demo-congrats',
+    'lang': 'en',
+    'offsetms': '0',
+    'skipms': '3000',
+}
+
 FIXTURES = {
     '/channels': {
         'GET': (
@@ -136,6 +143,12 @@ FIXTURES = {
             MUTE_CHANNEL,
         ),
     },
+    '/channels/%s/play' % CHANNEL['id']: {
+        'POST': (
+            {},
+            PLAY_CHANNEL,
+        ),
+    },
     '/channels/%s/unmute' % CHANNEL['id']: {
         'POST': (
             {},
@@ -151,6 +164,14 @@ class ChannelManagerTest(testtools.TestCase):
         super(ChannelManagerTest, self).setUp()
         self.api = utils.FakeAPI(FIXTURES)
         self.manager = channel.ChannelManager(self.api)
+
+    def test_add_audio(self):
+        res = self.manager.add_audio(channel_id=CHANNEL['id'], **PLAY_CHANNEL)
+        expect = [
+            ('POST', '/channels/%s/play' % CHANNEL['id'], {}, PLAY_CHANNEL),
+        ]
+        self.assertEqual(self.api.calls, expect)
+        self.assertTrue(res)
 
     def test_add_music(self):
         res = self.manager.add_music(channel_id=CHANNEL['id'], **MUSIC_CHANNEL)

@@ -40,6 +40,13 @@ MUSIC_BRIDGE = {
     'mohClass': 'default',
 }
 
+PLAY_BRIDGE = {
+    'media': 'sound:demo-congrats',
+    'lang': 'en',
+    'offsetms': '0',
+    'skipms': '3000',
+}
+
 REMOVE_BRIDGE = {
     'channel': '1381610401.13',
 }
@@ -81,6 +88,12 @@ FIXTURES = {
             MUSIC_BRIDGE,
         ),
     },
+    '/bridges/%s/play' % BRIDGE['id']: {
+        'POST': (
+            {},
+            PLAY_BRIDGE,
+        ),
+    },
     '/bridges/%s/removeChannel' % BRIDGE['id']: {
         'POST': (
             {},
@@ -101,6 +114,14 @@ class BridgeManagerTest(testtools.TestCase):
         res = self.manager.add(bridge_id=BRIDGE['id'], **ADD_BRIDGE)
         expect = [
             ('POST', '/bridges/%s/addChannel' % BRIDGE['id'], {}, ADD_BRIDGE),
+        ]
+        self.assertEqual(self.api.calls, expect)
+        self.assertTrue(res)
+
+    def test_add_audio(self):
+        res = self.manager.add_audio(bridge_id=BRIDGE['id'], **PLAY_BRIDGE)
+        expect = [
+            ('POST', '/bridges/%s/play' % BRIDGE['id'], {}, PLAY_BRIDGE),
         ]
         self.assertEqual(self.api.calls, expect)
         self.assertTrue(res)
