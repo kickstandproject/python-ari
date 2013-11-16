@@ -41,14 +41,6 @@ class FakeAPI(object):
 
         return FakeResponse(fixture[0]), body_iter
 
-    # Note(pabelanger): Work around upstream bug[1] and this function should be
-    # deleted once we can POST json directly to ARI.
-    #
-    # [1] https://issues.asterisk.org/jira/browse/ASTERISK-22685
-    #
-    def url_encode_request(self, *args, **kwargs):
-        return self.json_request(*args, **kwargs)
-
 
 class FakeResponse(object):
 
