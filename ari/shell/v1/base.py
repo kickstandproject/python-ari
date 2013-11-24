@@ -193,3 +193,39 @@ class ShowCommand(Command, show.ShowOne):
             help=help_str % self.resource)
 
         return parser
+
+
+class UpdateCommand(Command, show.ShowOne):
+
+    function = 'update'
+    log = None
+    resource = None
+
+    def _update(self, _id, body):
+        obj = getattr(self.get_client(), self.resource)
+        func = getattr(obj, self.function)
+        data = func(_id, **body)
+
+        if data:
+            return data.to_dict()
+
+        return None
+
+    def get_data(self, parsed_args):
+        self.log.debug(parsed_args)
+        body = self.args2body(parsed_args)
+        data = self._update(parsed_args.id, body)
+
+        if not data:
+            return ({}, {})
+        else:
+            return zip(*sorted(data.items()))
+
+    def get_parser(self, prog_name):
+        parser = super(UpdateCommand, self).get_parser(prog_name)
+        parser.add_argument(
+            'id', metavar=self.resource.upper(),
+            help='ID or name of %s to update' % self.resource)
+        self.add_known_arguments(parser)
+
+        return parser

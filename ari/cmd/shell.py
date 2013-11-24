@@ -30,6 +30,7 @@ from ari.openstack.common import log as logging
 from ari.shell.v1 import application
 from ari.shell.v1 import bridge
 from ari.shell.v1 import channel
+from ari.shell.v1 import devicestate
 from ari.shell.v1 import endpoint
 from ari.shell.v1 import sound
 
@@ -61,6 +62,10 @@ COMMAND = {
     'channel-mute-add': channel.AddMuteChannel,
     'channel-mute-remove': channel.RemoveMuteChannel,
     'channel-show': channel.ShowChannel,
+    'device-state-create': devicestate.CreateDeviceState,
+    'device-state-delete': devicestate.DeleteDeviceState,
+    'device-state-list': devicestate.ListDeviceState,
+    'device-state-show': devicestate.ShowDeviceState,
     'endpoint-list': endpoint.ListEndpoint,
     'endpoint-show': endpoint.ShowEndpoint,
     'sound-list': sound.ListSound,
