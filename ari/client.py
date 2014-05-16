@@ -18,30 +18,16 @@ import base64
 from ari.common import utils
 
 
-def get_client(api_version, **kwargs):
-    endpoint = kwargs.get('ari_url')
-    password = kwargs.get('ari_password', None)
-    token = None
-    username = kwargs.get('ari_username', None)
+def get_client(api_version, username, password, endpoint):
+    auth = base64.encodestring(
+        '%s:%s' % (username, password)
+    ).replace('\n', '')
+    token = 'Basic %s' % auth
 
-    if (password and username):
-        auth = base64.encodestring(
-            '%s:%s' % (username, password)
-        ).replace('\n', '')
-        token = 'Basic %s' % auth
-
-    cli_kwargs = {
-        'ca_file': kwargs.get('ca_file'),
-        'cert_file': kwargs.get('cert_file'),
-        'insecure': kwargs.get('insecure'),
-        'key_file': kwargs.get('key_file'),
-        'token': token
-    }
-
-    return Client(api_version, endpoint, **cli_kwargs)
+    return Client(api_version, endpoint, token)
 
 
-def Client(version, *args, **kwargs):
+def Client(version, *args):
     module = utils.import_versioned_module(version, 'client')
     client_class = getattr(module, 'Client')
-    return client_class(*args, **kwargs)
+    return client_class(*args)

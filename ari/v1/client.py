@@ -27,8 +27,8 @@ class Client(http.HTTPClient):
     """Client for the ARI v1 API.
     """
 
-    def __init__(self, *args, **kwargs):
-        super(Client, self).__init__(*args, **kwargs)
+    def __init__(self, *args):
+        super(Client, self).__init__(*args)
         self.applications = application.ApplicationManager(self)
         self.bridges = bridge.BridgeManager(self)
         self.channels = channel.ChannelManager(self)
