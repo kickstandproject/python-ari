@@ -122,9 +122,7 @@ class HTTPClient(object):
         _class = self.connection_params[0]
         try:
             return _class(
-                *self.connection_params[1][0:2],
-                **self.connection_params[2]
-            )
+                *self.connection_params[1][0:2])
         except httplib.InvalidURL:
             raise exception.InvalidEndpoint()
 
