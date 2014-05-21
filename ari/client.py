@@ -13,18 +13,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import base64
-
 from ari.common import utils
 
 
 def get_client(api_version, username, password, endpoint):
-    auth = base64.encodestring(
-        '%s:%s' % (username, password)
-    ).replace('\n', '')
-    token = 'Basic %s' % auth
-
-    return Client(api_version, endpoint, token)
+    return Client(api_version, username, password, endpoint)
 
 
 def Client(version, *args):

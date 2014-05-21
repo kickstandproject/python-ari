@@ -15,23 +15,14 @@
 # under the License.
 
 from ari.common import http
-from ari.v1 import application
 from ari.v1 import bridge
 from ari.v1 import channel
-from ari.v1 import devicestate
-from ari.v1 import endpoint
-from ari.v1 import sound
 
 
 class Client(http.HTTPClient):
-    """Client for the ARI v1 API.
-    """
+    """Client for the ARI v1 API."""
 
     def __init__(self, *args):
         super(Client, self).__init__(*args)
-        self.applications = application.ApplicationManager(self)
         self.bridges = bridge.BridgeManager(self)
         self.channels = channel.ChannelManager(self)
-        self.devicestates = devicestate.DeviceStateManager(self)
-        self.endpoints = endpoint.EndpointManager(self)
-        self.sounds = sound.SoundManager(self)

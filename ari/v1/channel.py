@@ -66,7 +66,7 @@ class ChannelManager(base.Manager):
 
     resource_class = Channel
 
-    def __create(self, attributes, path, **kwargs):
+    def __create(self, attributes, path, callback, **kwargs):
         keys = {}
         for (key, value) in kwargs.items():
             if key in attributes:
@@ -75,134 +75,138 @@ class ChannelManager(base.Manager):
                 message = key
                 raise exception.InvalidAttribute(message=message)
 
-        return self._create(path, keys)
+        return self._create(path, keys, callback=callback)
 
     @staticmethod
-    def _path(id=None):
-        return '/channels/%s' % id if id else '/channels'
+    def _path(uuid=None):
+        return '/channels/%s' % uuid if uuid else '/channels'
 
-    def add_audio(self, channel_id, **kwargs):
-        path = '%s/%s' % (self._path(channel_id), 'play')
+    def add_audio(self, uuid, callback=None, **kwargs):
+        path = '%s/%s' % (self._path(uuid), 'play')
 
         return self.__create(
-            attributes=PLAY_ATTRIBUTES, path=path, **kwargs)
+            attributes=PLAY_ATTRIBUTES, path=path, callback=callback, **kwargs)
 
-    def add_music(self, channel_id, **kwargs):
+    def add_music(self, uuid, callback=None, **kwargs):
         """Add music to the given channel.
 
-        :param channel_id: ID of the channel within the stasis application.
+        :param uuid: ID of the channel within the stasis application.
         """
 
-        path = '%s/%s' % (self._path(channel_id), 'moh')
+        path = '%s/%s' % (self._path(uuid), 'moh')
 
         return self.__create(
-            attributes=MUSIC_ATTRIBUTES, path=path, **kwargs)
+            attributes=MUSIC_ATTRIBUTES, path=path, callback=callback,
+            **kwargs)
 
-    def answer(self, channel_id):
+    def answer(self, uuid, callback=None):
         """Answer the given channel.
 
-        :param channel_id: ID of the channel within the stasis application.
+        :param uuid: ID of the channel within the stasis application.
         """
 
-        path = '%s/%s' % (self._path(channel_id), 'answer')
+        path = '%s/%s' % (self._path(uuid), 'answer')
 
-        return self._create(path, None)
+        return self.__create(
+            attributes=None, path=path, callback=callback)
 
-    def create(self, **kwargs):
+    def create(self, callback=None, **kwargs):
         path = self._path()
 
         return self.__create(
-            attributes=CREATE_ATTRIBUTES, path=path, **kwargs)
+            attributes=CREATE_ATTRIBUTES, path=path, callback=callback,
+            **kwargs)
 
-    def delete(self, channel_id):
+    def delete(self, uuid, callback=None):
         """Hangup the given channel.
 
-        :param channel_id: ID of the channel within the stasis application.
+        :param uuid: ID of the channel within the stasis application.
         """
 
-        return self._delete(self._path(channel_id))
+        return self._delete(self._path(uuid), callback=None)
 
-    def dial(self, channel_id, **kwargs):
-        path = '%s/%s' % (self._path(channel_id), 'dial')
+    def dial(self, uuid, callback=None, **kwargs):
+        path = '%s/%s' % (self._path(uuid), 'dial')
 
         return self.__create(
-            attributes=DIAL_ATTRIBUTES, path=path, **kwargs)
+            attributes=DIAL_ATTRIBUTES, path=path, callback=callback, **kwargs)
 
-    def exit(self, channel_id, **kwargs):
+    def exit(self, uuid, callback=None, **kwargs):
         """Exit the given channel from stasis.
 
-        :param channel_id: ID of the channel within the stasis application.
+        :param uuid: ID of the channel within the stasis application.
         """
 
-        path = '%s/%s' % (self._path(channel_id), 'continue')
+        path = '%s/%s' % (self._path(uuid), 'continue')
 
         return self.__create(
-            attributes=EXIT_ATTRIBUTES, path=path, **kwargs)
+            attributes=EXIT_ATTRIBUTES, path=path, callback=callback, **kwargs)
 
-    def get(self, channel_id):
+    def get(self, uuid, callback=None):
         """Get information of the given channel.
 
-        :param channel_id: ID of the channel within the stasis application.
+        :param uuid: ID of the channel within the stasis application.
         """
 
         try:
-            return self._list(self._path(channel_id))[0]
+            return self._list(self._path(uuid), callback=callback)[0]
         except IndexError:
             return None
 
-    def hold(self, channel_id):
+    def hold(self, uuid, callback=None):
         """Place the given channel on hold.
 
-        :param channel_id: ID of the channel within the stasis application.
+        :param uuid: ID of the channel within the stasis application.
         """
 
-        path = '%s/%s' % (self._path(channel_id), 'hold')
+        path = '%s/%s' % (self._path(uuid), 'hold')
 
-        return self._create(path, None)
+        return self.__create(
+            attributes=None, path=path, callback=callback)
 
-    def list(self):
+    def list(self, callback=None):
         """List active channels."""
 
-        return self._list(self._path())
+        return self._list(self._path(), callback=callback)
 
-    def mute(self, channel_id, **kwargs):
+    def mute(self, uuid, callback=None, **kwargs):
         """Mute the given channel.
 
-        :param channel_id: ID of the channel within the stasis application.
+        :param uuid: ID of the channel within the stasis application.
         """
 
-        path = '%s/%s' % (self._path(channel_id), 'mute')
+        path = '%s/%s' % (self._path(uuid), 'mute')
 
         return self.__create(
-            attributes=MUTE_ATTRIBUTES, path=path, **kwargs)
+            attributes=MUTE_ATTRIBUTES, path=path, callback=callback, **kwargs)
 
-    def remove_music(self, channel_id):
+    def remove_music(self, uuid, callback=None):
         """Remove music from the given channel.
 
-        :param channel_id: ID of the channel within the stasis application.
+        :param uuid: ID of the channel within the stasis application.
         """
 
-        path = '%s/%s' % (self._path(channel_id), 'moh')
+        path = '%s/%s' % (self._path(uuid), 'moh')
 
-        return self._delete(path)
+        return self._delete(path, callback=callback)
 
-    def unhold(self, channel_id):
+    def unhold(self, uuid, callback=None):
         """Remove the given channel from hold.
 
-        :param channel_id: ID of the channel within the stasis application.
+        :param uuid: ID of the channel within the stasis application.
         """
 
-        path = '%s/%s' % (self._path(channel_id), 'hold')
+        path = '%s/%s' % (self._path(uuid), 'hold')
 
-        return self._delete(path)
+        return self._delete(path, callback=callback)
 
-    def unmute(self, channel_id, **kwargs):
+    def unmute(self, uuid, callback=None, **kwargs):
         """Remove the given channel from mute.
 
-        :param channel_id: ID of the channel within the stasis application.
+        :param uuid: ID of the channel within the stasis application.
         """
 
-        path = '%s/%s' % (self._path(channel_id), 'unmute')
+        path = '%s/%s' % (self._path(uuid), 'unmute')
 
         return self.__create(
-            attributes=MUTE_ATTRIBUTES, path=path, **kwargs)
+            attributes=MUTE_ATTRIBUTES, path=path, callback=callback, **kwargs)

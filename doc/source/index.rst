@@ -23,5 +23,3 @@ docstrings here:
 
 .. toctree::
    :maxdepth: 1
-
-   v1_channel

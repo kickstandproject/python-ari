@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2013 PolyBeacon, Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -50,7 +49,7 @@ class BridgeManager(base.Manager):
 
     resource_class = Bridge
 
-    def __create(self, attributes, path, **kwargs):
+    def __create(self, attributes, path, callback, **kwargs):
         keys = {}
         for (key, value) in kwargs.items():
             if key in attributes:
@@ -58,55 +57,57 @@ class BridgeManager(base.Manager):
             else:
                 raise exception.InvalidAttribute()
 
-        return self._create(path, keys)
+        return self._create(path, keys, callback=callback)
 
     @staticmethod
-    def _path(id=None):
-        return '/bridges/%s' % id if id else '/bridges'
+    def _path(uuid=None):
+        return '/bridges/%s' % uuid if uuid else '/bridges'
 
-    def add_audio(self, bridge_id, **kwargs):
-        path = '%s/%s' % (self._path(bridge_id), 'play')
-
-        return self.__create(
-            attributes=PLAY_ATTRIBUTES, path=path, **kwargs)
-
-    def add(self, bridge_id, **kwargs):
-        path = '%s/%s' % (self._path(bridge_id), 'addChannel')
+    def add_audio(self, uuid, callback=None, **kwargs):
+        path = '%s/%s' % (self._path(uuid), 'play')
 
         return self.__create(
-            attributes=ADD_ATTRIBUTES, path=path, **kwargs)
+            attributes=PLAY_ATTRIBUTES, path=path, callback=callback, **kwargs)
 
-    def create(self, **kwargs):
-        path = self._path()
+    def add(self, uuid, callback=None, **kwargs):
+        path = '%s/%s' % (self._path(uuid), 'addChannel')
 
         return self.__create(
-            attributes=CREATE_ATTRIBUTES, path=path, **kwargs)
+            attributes=ADD_ATTRIBUTES, path=path, callback=callback, **kwargs)
 
-    def delete(self, bridge_id):
-        return self._delete(self._path(bridge_id))
+    def create(self, uuid=None, callback=None, **kwargs):
+        path = self._path(uuid)
 
-    def get(self, bridge_id):
+        return self.__create(
+            attributes=CREATE_ATTRIBUTES, path=path, callback=callback,
+            **kwargs)
+
+    def delete(self, uuid, callback=None):
+        return self._delete(self._path(uuid), callback=callback)
+
+    def get(self, uuid, callback=None):
         try:
-            return self._list(self._path(bridge_id))[0]
+            return self._list(self._path(uuid), callback=callback)
         except IndexError:
             return None
 
-    def add_music(self, bridge_id, **kwargs):
-        path = '%s/%s' % (self._path(bridge_id), 'moh')
+    def add_music(self, uuid, callback=None, **kwargs):
+        path = '%s/%s' % (self._path(uuid), 'moh')
 
         return self.__create(
-            attributes=MUSIC_ATTRIBUTES, path=path, **kwargs)
+            attributes=MUSIC_ATTRIBUTES, path=path, callback=callback,
+            **kwargs)
 
-    def list(self):
-        return self._list(self._path())
+    def list(self, callback=None):
+        return self._list(self._path(), callback=callback)
 
-    def remove(self, bridge_id, **kwargs):
-        path = '%s/%s' % (self._path(bridge_id), 'removeChannel')
+    def remove(self, uuid, callback=None, **kwargs):
+        path = '%s/%s' % (self._path(uuid), 'removeChannel')
 
         return self.__create(
-            attributes=ADD_ATTRIBUTES, path=path, **kwargs)
+            attributes=ADD_ATTRIBUTES, path=path, callback=callback, **kwargs)
 
-    def remove_music(self, bridge_id):
-        path = '%s/%s' % (self._path(bridge_id), 'moh')
+    def remove_music(self, uuid, callback=None):
+        path = '%s/%s' % (self._path(uuid), 'moh')
 
-        return self._delete(path)
+        return self._delete(path, callback=callback)

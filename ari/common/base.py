@@ -16,6 +16,11 @@
 
 import copy
 
+try:
+    import json
+except ImportError:
+    import simplejson as json
+
 
 class Manager(object):
 
@@ -24,38 +29,41 @@ class Manager(object):
     def __init__(self, api):
         self.api = api
 
-    def _create(self, url, body):
-        resp, body = self.api.json_request('POST', url, body=body)
-        if body:
-            return self.resource_class(self, body)
+    def _create(self, url, body, callback):
+        def handler(response):
+            if callback and response.body:
+                body = json.loads(response.body)
+                res = self.resource_class(self, body)
+                callback(res)
 
-    def _delete(self, url):
-        self.api.raw_request('DELETE', url)
+        self.api.json_request(
+            url=url, callback=handler, method='POST', body=body)
 
-    def _list(self, url, response_key=None, obj_class=None, body=None):
-        resp, body = self.api.json_request('GET', url)
+    def _delete(self, url, callback):
+        self.api.json_request(url=url, callback=None, method='DELETE')
 
-        if obj_class is None:
+    def _list(self, url, body, callback):
+        def handler(response):
             obj_class = self.resource_class
+            data = response.body
 
-        if response_key:
-            try:
-                data = body[response_key]
-            except KeyError:
-                return []
-        else:
-            data = body
+            if not isinstance(data, list):
+                data = [data]
 
-        if not isinstance(data, list):
-            data = [data]
+            return [obj_class(self, res, loaded=True) for res in data if res]
 
-        return [obj_class(self, res, loaded=True) for res in data if res]
+        self.api.json_request(url=url, callback=handler, method='GET')
 
-    def _update(self, url, body, response_key=None):
-        resp, body = self.api.json_request('PUT', url, body=body)
-        # PUT requests may not return a body
-        if body:
-            return self.resource_class(self, body)
+    def _update(self, url, body, callback):
+        def handler(response):
+            # PUT requests may not return a body
+            if callback and response.body:
+                body = json.loads(response.body)
+                res = self.resource_class(self, body)
+                callback(res)
+
+        self.api.json_request(
+            url=url, callback=handler, method='PUT', body=body)
 
 
 class Resource(object):
