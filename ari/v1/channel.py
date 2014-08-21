@@ -110,8 +110,13 @@ class ChannelManager(base.Manager):
         return self.__create(
             attributes=None, path=path, callback=callback)
 
-    def create(self, callback=None, **kwargs):
-        path = self._path()
+    def create(self, uuid=None, callback=None, **kwargs):
+        """Create a new channel."
+
+        :param uuid: Unique identifier of the channel.
+        """
+
+        path = self._path(uuid)
 
         return self.__create(
             attributes=CREATE_ATTRIBUTES, path=path, callback=callback,
